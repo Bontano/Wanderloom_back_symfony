@@ -31,6 +31,7 @@ class ItineraireController extends AbstractController
         Je veux que tu me retourne uniquement le json sans texte superflu";
         $prompt = $firstPromptSubstring ." ". $city ." ". $secondPromptSubstring ." ". $startDate ." ". $thirdPromptSubstring ." ". $endDate ." ". $fourthPromptSubstring;
         $itinary = $itinaryHandler->genererItineraire($prompt);
+        dd(json_decode($itinary) );
         return new Response(
             $itinary
             , 200);

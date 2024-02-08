@@ -30,14 +30,9 @@ class Itinary
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date = null;
-
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $note = null;
 
     #[ORM\ManyToOne(inversedBy: 'itinaries')]
     #[ORM\JoinColumn(nullable: false)]

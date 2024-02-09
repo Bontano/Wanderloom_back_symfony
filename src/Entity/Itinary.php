@@ -3,22 +3,31 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use App\Controller\GetUserItinariesController;
 use App\Controller\ItineraireController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 
-#[ApiResource(operations: [
-    new Post(
-        uriTemplate: '/itinary/publication',
-        controller: ItineraireController::class,
-        name: 'publication'
-    )
-])]
+#[
+    ApiResource(operations: [
+        new Post(
+            uriTemplate: '/itinary/publication',
+            controller: ItineraireController::class,
+            name: 'publication'
+        ),
+        new GetCollection(
+
+            uriTemplate: '/itinaries/user',
+            controller: GetUserItinariesController::class,
+            name: 'getUserItinaries'
+        )
+
+    ])]
 #[ORM\Entity(repositoryClass: ItinaryRepository::class)]
 class Itinary
 {
@@ -33,20 +42,17 @@ class Itinary
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
+    #[ORM\OneToMany(mappedBy: 'itinary', targetEntity: UserItinary::class, orphanRemoval: true)]
+    private Collection $userItinaries;
 
-    #[ORM\ManyToOne(inversedBy: 'itinaries')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userCreator = null;
+    #[ORM\OneToMany(mappedBy: 'itinary', targetEntity: ItinaryActivity::class)]
+    private Collection $itinaryActivities;
 
-    #[ORM\ManyToOne(inversedBy: 'favoriteItinaries')]
-    private ?User $user = null;
-
-    #[ORM\ManyToMany(targetEntity: Activity::class)]
-    private Collection $activities;
 
     public function __construct()
     {
-        $this->activities = new ArrayCollection();
+        $this->userItinaries = new ArrayCollection();
+        $this->itinaryActivities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -66,17 +72,6 @@ class Itinary
         return $this;
     }
 
-    public function getDate(): ?\DateTimeImmutable
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeImmutable $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
 
     public function getCountry(): ?string
     {
@@ -90,62 +85,62 @@ class Itinary
         return $this;
     }
 
-    public function getNote(): ?string
-    {
-        return $this->note;
-    }
-
-    public function setNote(?string $note): static
-    {
-        $this->note = $note;
-
-        return $this;
-    }
-
-    public function getUserCreator(): ?User
-    {
-        return $this->userCreator;
-    }
-
-    public function setUserCreator(?User $userCreator): static
-    {
-        $this->userCreator = $userCreator;
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Activity>
+     * @return Collection<int, UserItinary>
      */
-    public function getActivities(): Collection
+    public function getUserItinaries(): Collection
     {
-        return $this->activities;
+        return $this->userItinaries;
     }
 
-    public function addActivity(Activity $activity): static
+    public function addUserItinary(UserItinary $userItinary): static
     {
-        if (!$this->activities->contains($activity)) {
-            $this->activities->add($activity);
+        if (!$this->userItinaries->contains($userItinary)) {
+            $this->userItinaries->add($userItinary);
+            $userItinary->setItinary($this);
         }
 
         return $this;
     }
 
-    public function removeActivity(Activity $activity): static
+    public function removeUserItinary(UserItinary $userItinary): static
     {
-        $this->activities->removeElement($activity);
+        if ($this->userItinaries->removeElement($userItinary)) {
+            // set the owning side to null (unless already changed)
+            if ($userItinary->getItinary() === $this) {
+                $userItinary->setItinary(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ItinaryActivity>
+     */
+    public function getItinaryActivities(): Collection
+    {
+        return $this->itinaryActivities;
+    }
+
+    public function addItinaryActivity(ItinaryActivity $itinaryActivity): static
+    {
+        if (!$this->itinaryActivities->contains($itinaryActivity)) {
+            $this->itinaryActivities->add($itinaryActivity);
+            $itinaryActivity->setItinary($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItinaryActivity(ItinaryActivity $itinaryActivity): static
+    {
+        if ($this->itinaryActivities->removeElement($itinaryActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($itinaryActivity->getItinary() === $this) {
+                $itinaryActivity->setItinary(null);
+            }
+        }
 
         return $this;
     }

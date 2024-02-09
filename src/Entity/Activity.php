@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\ActivityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,46 +18,27 @@ class Activity
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $date = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $type = null;
+    private ?string $country = null;
+
+    #[ORM\OneToMany(mappedBy: 'activity', targetEntity: ItinaryActivity::class)]
+    private Collection $itinaryActivities;
+
+    public function __construct()
+    {
+        $this->itinaryActivities = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeImmutable
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateTimeImmutable $date): static
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
 
     public function getDescription(): ?string
     {
@@ -69,14 +52,44 @@ class Activity
         return $this;
     }
 
-    public function getType(): ?string
+    public function getCountry(): ?string
     {
-        return $this->type;
+        return $this->country;
     }
 
-    public function setType(string $type): static
+    public function setCountry(string $country): static
     {
-        $this->type = $type;
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ItinaryActivity>
+     */
+    public function getItinaryActivities(): Collection
+    {
+        return $this->itinaryActivities;
+    }
+
+    public function addItinaryActivity(ItinaryActivity $itinaryActivity): static
+    {
+        if (!$this->itinaryActivities->contains($itinaryActivity)) {
+            $this->itinaryActivities->add($itinaryActivity);
+            $itinaryActivity->setActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeItinaryActivity(ItinaryActivity $itinaryActivity): static
+    {
+        if ($this->itinaryActivities->removeElement($itinaryActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($itinaryActivity->getActivity() === $this) {
+                $itinaryActivity->setActivity(null);
+            }
+        }
 
         return $this;
     }

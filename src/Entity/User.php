@@ -45,13 +45,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: Itinary::class, orphanRemoval: true)]
     private Collection $itinaries;
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Itinary::class)]
-    private Collection $favoriteItinaries;
+    #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: UserItinary::class, orphanRemoval: true)]
+    private Collection $userItinaries;
+
 
     public function __construct()
     {
         $this->itinaries = new ArrayCollection();
-        $this->favoriteItinaries = new ArrayCollection();
+        $this->userItinaries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -167,29 +168,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Itinary>
+     * @return Collection<int, UserItinary>
      */
-    public function getFavoriteItinaries(): Collection
+    public function getUserItinaries(): Collection
     {
-        return $this->favoriteItinaries;
+        return $this->userItinaries;
     }
 
-    public function addFavoriteItinary(Itinary $favoriteItinary): static
+    public function addUserItinary(UserItinary $userItinary): static
     {
-        if (!$this->favoriteItinaries->contains($favoriteItinary)) {
-            $this->favoriteItinaries->add($favoriteItinary);
-            $favoriteItinary->setUser($this);
+        if (!$this->userItinaries->contains($userItinary)) {
+            $this->userItinaries->add($userItinary);
+            $userItinary->setUserCreator($this);
         }
 
         return $this;
     }
 
-    public function removeFavoriteItinary(Itinary $favoriteItinary): static
+    public function removeUserItinary(UserItinary $userItinary): static
     {
-        if ($this->favoriteItinaries->removeElement($favoriteItinary)) {
+        if ($this->userItinaries->removeElement($userItinary)) {
             // set the owning side to null (unless already changed)
-            if ($favoriteItinary->getUser() === $this) {
-                $favoriteItinary->setUser(null);
+            if ($userItinary->getUserCreator() === $this) {
+                $userItinary->setUserCreator(null);
             }
         }
 

@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ItinaryActivityRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ItinaryActivityRepository::class)]
 class ItinaryActivity
@@ -14,15 +15,18 @@ class ItinaryActivity
     private ?int $id = null;
 
     #[ORM\ManyToOne(cascade: ['persist'],inversedBy: 'itinaryActivities')]
+    #[Groups(['itinary:read'])]
     private ?Activity $activity = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'itinaryActivities')]
     private ?Itinary $itinary = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['itinary:read'])]
     private ?string $dayMoment = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['itinary:read'])]
     private ?string $day = null;
 
     public function getId(): ?int

@@ -6,8 +6,10 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Controller\GetUserItinariesController;
-use App\Controller\ItineraireController;
+use App\Controller\PostItinaryController;
+use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,8 +20,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
 #[ApiResource(operations: [
     new Post(
         uriTemplate: '/itinary/publication',
-        controller: ItineraireController::class,
-        name: 'publication'
+        controller: PostItinaryController::class,
+        name: 'newItinary'
+    ),
+    new Put(
+        uriTemplate: '/itinary/{id}/favorite',
+        controller: PutFavoriteItinaryController::class,
+        name: 'updateFavorite'
     ),
     new GetCollection(
         uriTemplate: '/itinary/user',

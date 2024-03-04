@@ -51,8 +51,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['itinary:read'])]
     private ?string $username = null;
 
-    #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: Itinary::class, orphanRemoval: true)]
-    private Collection $itinaries;
 
     #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: UserItinary::class, orphanRemoval: true)]
     private Collection $userItinaries;
@@ -60,7 +58,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->itinaries = new ArrayCollection();
         $this->userItinaries = new ArrayCollection();
     }
 
@@ -146,35 +143,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Itinary>
-     */
-    public function getItinaries(): Collection
-    {
-        return $this->itinaries;
-    }
-
-    public function addItinary(Itinary $itinary): static
-    {
-        if (!$this->itinaries->contains($itinary)) {
-            $this->itinaries->add($itinary);
-            $itinary->setUserCreator($this);
-        }
-
-        return $this;
-    }
-
-    public function removeItinary(Itinary $itinary): static
-    {
-        if ($this->itinaries->removeElement($itinary)) {
-            // set the owning side to null (unless already changed)
-            if ($itinary->getUserCreator() === $this) {
-                $itinary->setUserCreator(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, UserItinary>

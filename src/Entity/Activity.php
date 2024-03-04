@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
@@ -20,9 +21,11 @@ class Activity
 
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['itinary:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['itinary:read'])]
     private ?string $country = null;
 
     #[ORM\OneToMany(mappedBy: 'activity', targetEntity: ItinaryActivity::class)]

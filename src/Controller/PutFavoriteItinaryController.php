@@ -15,6 +15,7 @@ class PutFavoriteItinaryController extends AbstractController
     {
         $content = json_decode($request->getContent());
         $user = $userRepository->findAll()[0]; //TEMPORAIRE
+
         $itinary->getUserCreator()->setFavorite(!$itinary->getUserCreator()->isFavorite());
 
 

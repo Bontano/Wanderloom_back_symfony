@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ItinaryRepository;
 use App\Repository\UserItinaryRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ class GetUserItinariesController extends AbstractController
     )
     {
     }
-    public function __invoke(UserItinaryRepository $userItinaryRepository, UserRepository $userRepository, SerializerInterface $serializer, Request $request): Response
+    public function __invoke(ItinaryRepository $itinaryRepository, UserRepository $userRepository, SerializerInterface $serializer, Request $request): Response
     {
 //        return $this->json($this->security->getUser());
 //        dd($this->security->getUser()) ;
@@ -30,7 +31,7 @@ class GetUserItinariesController extends AbstractController
         $isFavorite = $request->query->get('type') === "favorites";
 
         $json = $serializer->normalize(
-            $userItinaryRepository->findBy(['userCreator' => $user, "favorite"=> $isFavorite]),
+            $itinaryRepository->findBy(['user' => $user, "favorite"=> $isFavorite]),
             null,
             ['groups'=>'itinary:read']
         );

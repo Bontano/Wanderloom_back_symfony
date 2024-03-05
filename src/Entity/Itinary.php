@@ -55,17 +55,22 @@ class Itinary
     #[Groups(['itinary:read'])]
     private ?string $country = null;
 
-    #[ORM\OneToMany(mappedBy: 'itinary', targetEntity: UserItinary::class, orphanRemoval: true)]
-    private Collection $userItinaries;
 
     #[ORM\OneToMany(mappedBy: 'itinary', targetEntity: ItinaryActivity::class)]
     #[Groups(['itinary:read'])]
     private Collection $itinaryActivities;
 
+    #[ORM\ManyToOne(inversedBy: 'itinaries')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\Column]
+    #[Groups(['itinary:read'])]
+    private ?bool $favorite = null;
+
 
     public function __construct()
     {
-        $this->userItinaries = new ArrayCollection();
         $this->itinaryActivities = new ArrayCollection();
     }
 
@@ -99,35 +104,6 @@ class Itinary
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserItinary>
-     */
-    public function getUserItinaries(): Collection
-    {
-        return $this->userItinaries;
-    }
-
-    public function addUserItinary(UserItinary $userItinary): static
-    {
-        if (!$this->userItinaries->contains($userItinary)) {
-            $this->userItinaries->add($userItinary);
-            $userItinary->setItinary($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserItinary(UserItinary $userItinary): static
-    {
-        if ($this->userItinaries->removeElement($userItinary)) {
-            // set the owning side to null (unless already changed)
-            if ($userItinary->getItinary() === $this) {
-                $userItinary->setItinary(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, ItinaryActivity>
@@ -155,6 +131,30 @@ class Itinary
                 $itinaryActivity->setItinary(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function isFavorite(): ?bool
+    {
+        return $this->favorite;
+    }
+
+    public function setFavorite(bool $favorite): static
+    {
+        $this->favorite = $favorite;
 
         return $this;
     }

@@ -51,14 +51,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['itinary:read'])]
     private ?string $username = null;
 
-
-    #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: UserItinary::class, orphanRemoval: true)]
-    private Collection $userItinaries;
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Itinary::class, orphanRemoval: true)]
+    private Collection $itinaries;
 
 
     public function __construct()
     {
-        $this->userItinaries = new ArrayCollection();
+        $this->itinaries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,34 +142,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
     /**
-     * @return Collection<int, UserItinary>
+     * @return Collection<int, Itinary>
      */
-    public function getUserItinaries(): Collection
+    public function getItinaries(): Collection
     {
-        return $this->userItinaries;
+        return $this->itinaries;
     }
 
-    public function addUserItinary(UserItinary $userItinary): static
+    public function addItinary(Itinary $itinary): static
     {
-        if (!$this->userItinaries->contains($userItinary)) {
-            $this->userItinaries->add($userItinary);
-            $userItinary->setUserCreator($this);
+        if (!$this->itinaries->contains($itinary)) {
+            $this->itinaries->add($itinary);
+            $itinary->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeUserItinary(UserItinary $userItinary): static
+    public function removeItinary(Itinary $itinary): static
     {
-        if ($this->userItinaries->removeElement($userItinary)) {
+        if ($this->itinaries->removeElement($itinary)) {
             // set the owning side to null (unless already changed)
-            if ($userItinary->getUserCreator() === $this) {
-                $userItinary->setUserCreator(null);
+            if ($itinary->getUser() === $this) {
+                $itinary->setUser(null);
             }
         }
 
         return $this;
     }
+
+
 }

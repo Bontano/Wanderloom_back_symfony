@@ -5,13 +5,10 @@ namespace App\Service;
 use App\Entity\Activity;
 use App\Entity\Itinary;
 use App\Entity\ItinaryActivity;
-use App\Entity\UserItinary;
 use App\Repository\ActivityRepository;
 use App\Repository\ItinaryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Client;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ItinaryHandler
@@ -21,7 +18,7 @@ class ItinaryHandler
     {
     }
 
-    public function genererItineraire(string $prompt, $user): Itinary
+    public function genererItineraireMock(string $prompt, $user): Itinary
     {
         try {
             $response = $this->client->request('POST', 'http://141.95.175.158:3010/itineraire', [
@@ -38,7 +35,27 @@ class ItinaryHandler
             return $e;
         }
     }
-
+    public function genererItineraireOpenAi(string $prompt, $user)
+    {
+        try {
+            $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
+                'headers' => [
+                    'Authorization'=>'Bearer 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',
+                    'OpenAI-Organization'=> 'org-ppbI1onTjUKtzlo4HNOTH9iq'
+                ],
+                'body' => json_encode([
+                    'prompt' => $prompt,
+                    'model' => 'gpt-3.5-turbo',
+                    "temperature"=> 0.7,
+                ]),
+            ]);
+            return $response;
+            return
+                self::setInDatabase((array)json_decode($response->getContent()), $user);
+        } catch (GuzzleException $e) {
+            return $e;
+        }
+    }
     public function setInDatabase($itinaryDatas, $user): Itinary
     {
         $itinary = new Itinary();

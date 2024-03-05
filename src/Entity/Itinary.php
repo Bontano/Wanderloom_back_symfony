@@ -21,11 +21,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
     new Post(
         uriTemplate: '/itinary/publication',
         controller: PostItinaryController::class,
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
         name: 'newItinary'
     ),
     new Put(
         uriTemplate: '/itinary/{id}/favorite',
         controller: PutFavoriteItinaryController::class,
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
         name: 'updateFavorite'
     ),
     new GetCollection(

@@ -12,6 +12,7 @@ class ItinaryActivity
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['itinary:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(cascade: ['persist'],inversedBy: 'itinaryActivities')]

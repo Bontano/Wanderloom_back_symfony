@@ -9,13 +9,15 @@ use App\Repository\ActivityRepository;
 use App\Repository\ItinaryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ItinaryHandler
 {
-
-    public function __construct(private readonly HttpClientInterface $client, private readonly EntityManagerInterface $em, private readonly ActivityRepository $activityRepository, private readonly ItinaryRepository $itinaryRepository)
+    private $apiKey;
+    public function __construct(private readonly HttpClientInterface $client, private readonly EntityManagerInterface $em, private readonly ActivityRepository $activityRepository, ParameterBagInterface $params)
     {
+        $this->apiKey = $params->get('OPEN_API_KEY');
     }
 
     public function genererItineraireMock(string $prompt, $user): Itinary
@@ -40,16 +42,18 @@ class ItinaryHandler
         try {
             $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
                 'headers' => [
-                    'Authorization'=>'Bearer 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',
-                    'OpenAI-Organization'=> 'org-ppbI1onTjUKtzlo4HNOTH9iq'
+                    'Authorization' => $this->apiKey,
                 ],
-                'body' => json_encode([
-                    'prompt' => $prompt,
+                'json' => [
                     'model' => 'gpt-3.5-turbo',
-                    "temperature"=> 0.7,
-                ]),
+                    'messages' => [
+                        [
+                            'role' => 'user',
+                            'content' => $prompt
+                        ]
+                    ],
+                ],
             ]);
-            return $response;
             return
                 self::setInDatabase((array)json_decode($response->getContent()), $user);
         } catch (GuzzleException $e) {

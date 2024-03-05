@@ -32,8 +32,7 @@ class PostItinaryController extends AbstractController
         ->ville->semaine->jour->moment de la journée.
         Je veux que tu me retourne uniquement le json sans texte superflu";
         $prompt = $firstPromptSubstring . " " . $city . " " . $secondPromptSubstring . " " . $startDate . " " . $thirdPromptSubstring . " " . $endDate . " " . $fourthPromptSubstring;
-        $itinary = $itinaryHandler->genererItineraireOpenAi($prompt, $user);
-dd($itinary);
+        $itinary = $itinaryHandler->genererItineraireMock($prompt, $user);
         $json = $serializer->normalize(
             $itinary,
             null,

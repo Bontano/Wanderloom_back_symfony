@@ -51,17 +51,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['itinary:read'])]
     private ?string $username = null;
 
-    #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: Itinary::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Itinary::class, orphanRemoval: true)]
     private Collection $itinaries;
-
-    #[ORM\OneToMany(mappedBy: 'userCreator', targetEntity: UserItinary::class, orphanRemoval: true)]
-    private Collection $userItinaries;
 
 
     public function __construct()
     {
         $this->itinaries = new ArrayCollection();
-        $this->userItinaries = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -158,7 +154,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->itinaries->contains($itinary)) {
             $this->itinaries->add($itinary);
-            $itinary->setUserCreator($this);
+            $itinary->setUser($this);
         }
 
         return $this;
@@ -168,41 +164,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->itinaries->removeElement($itinary)) {
             // set the owning side to null (unless already changed)
-            if ($itinary->getUserCreator() === $this) {
-                $itinary->setUserCreator(null);
+            if ($itinary->getUser() === $this) {
+                $itinary->setUser(null);
             }
         }
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserItinary>
-     */
-    public function getUserItinaries(): Collection
-    {
-        return $this->userItinaries;
-    }
 
-    public function addUserItinary(UserItinary $userItinary): static
-    {
-        if (!$this->userItinaries->contains($userItinary)) {
-            $this->userItinaries->add($userItinary);
-            $userItinary->setUserCreator($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUserItinary(UserItinary $userItinary): static
-    {
-        if ($this->userItinaries->removeElement($userItinary)) {
-            // set the owning side to null (unless already changed)
-            if ($userItinary->getUserCreator() === $this) {
-                $userItinary->setUserCreator(null);
-            }
-        }
-
-        return $this;
-    }
 }

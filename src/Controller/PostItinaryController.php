@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ItineraireController extends AbstractController
+class PostItinaryController extends AbstractController
 {
 
     public function __invoke(Request $request, ItinaryHandler $itinaryHandler, SecurityController $securityController, UserRepository $userRepository): Response
@@ -32,6 +32,7 @@ class ItineraireController extends AbstractController
         Je veux que tu me retourne uniquement le json sans texte superflu";
         $prompt = $firstPromptSubstring . " " . $city . " " . $secondPromptSubstring . " " . $startDate . " " . $thirdPromptSubstring . " " . $endDate . " " . $fourthPromptSubstring;
         $itinary = $itinaryHandler->genererItineraire($prompt, $user);
+
         return new Response(
             json_encode($itinary)
             , 200);

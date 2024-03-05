@@ -44,6 +44,8 @@ class ItinaryHandler
         $itinary = new Itinary();
         $itinary->setCountry(array_key_first($itinaryDatas));
         $itinary->setTitle("Mon bel itinéraire");
+        $itinary->setFavorite(false);
+        $itinary->setUser($user);
         $index = 0;
         foreach ($itinaryDatas[array_key_first($itinaryDatas)] as $day) {
             $index++;
@@ -53,6 +55,7 @@ class ItinaryHandler
                         $activity = new Activity();
                         $activity->setDescription($activityContent);
                         $activity->setCountry(array_key_first($itinaryDatas));
+                        $this->em->persist($activity);
 
                         $activityInItinary = new ItinaryActivity();
                         $activityInItinary->setActivity($activity);
@@ -70,14 +73,7 @@ class ItinaryHandler
                         $this->em->persist($activityInItinary);
                     }
                 }
-
         }
-        $itinaryInUser = new UserItinary();
-        $itinaryInUser->setItinary($itinary);
-        $itinaryInUser->setUserCreator($user);
-        $itinaryInUser->setFavorite(false);
-        $this->em->persist($activity);
-        $this->em->persist($itinaryInUser);
         $this->em->flush();
         return $itinary;
     }

@@ -38,6 +38,18 @@ use Symfony\Component\Serializer\Attribute\Groups;
         normalizationContext: ['groups' => ['itinary:read']],
         denormalizationContext: ['groups' => ['itinary:read']],
         name: 'getUserItinaries'
+    ),
+    new Get(
+        uriTemplate: '/itinary/{id}',
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
+        name: 'getItinary'
+    ),
+    new Put(
+        uriTemplate: '/itinary/{id}',
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
+        name: 'putItinary'
     )
 
 

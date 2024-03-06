@@ -8,13 +8,16 @@
          bootstrap="tests/bootstrap.php"
          convertDeprecationsToExceptions="false"
 >
+
     <php>
-        <ini name="display_errors" value="1" />
-        <ini name="error_reporting" value="-1" />
-        <server name="APP_ENV" value="test" force="true" />
-        <server name="SHELL_VERBOSITY" value="-1" />
-        <server name="SYMFONY_PHPUNIT_REMOVE" value="" />
-        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5" />
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <server name="APP_ENV" value="test" force="true"/>
+        <server name="SHELL_VERBOSITY" value="-1"/>
+        <server name="SYMFONY_PHPUNIT_REMOVE" value=""/>
+        <server name="SYMFONY_PHPUNIT_VERSION" value="9.5"/>
+        <env name="OPEN_API_KEY" value="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"/>
+
     </php>
 
     <testsuites>
@@ -30,7 +33,7 @@
     </coverage>
 
     <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener" />
+        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener"/>
     </listeners>
 
     <extensions>

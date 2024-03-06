@@ -18,3 +18,4 @@ Lancement du projet :
 -  symfony serve
 -  accès docs de l'api - https://localhost:8000/api/docs
 -  accès panneau administration - https://localhost:8000/admin
+ 

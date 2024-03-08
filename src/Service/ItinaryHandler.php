@@ -15,12 +15,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ItinaryHandler
 {
     private $apiKey;
+
     public function __construct(private readonly HttpClientInterface $client, private readonly EntityManagerInterface $em, private readonly ActivityRepository $activityRepository, ParameterBagInterface $params)
     {
         $this->apiKey = $params->get('OPEN_API_KEY');
     }
 
-    public function genererItineraireMock(string $prompt, $user): Itinary
+    public function generatorItineraryMock(string $prompt, $user): Itinary
     {
         try {
             $response = $this->client->request('POST', 'http://141.95.175.158:3010/itineraire', [
@@ -37,7 +38,8 @@ class ItinaryHandler
             return $e;
         }
     }
-    public function genererItineraireOpenAi(string $prompt, $user)
+
+    public function generatorItineraryOpenAi(string $prompt, $user)
     {
         try {
             $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
@@ -60,6 +62,7 @@ class ItinaryHandler
             return $e;
         }
     }
+
     public function setInDatabase($itinaryDatas, $user): Itinary
     {
         $itinary = new Itinary();

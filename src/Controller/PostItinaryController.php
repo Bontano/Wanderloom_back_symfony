@@ -33,7 +33,7 @@ class PostItinaryController extends AbstractController
         Je veux que tu me retourne uniquement le json sans texte superflu";
         $prompt = $firstPromptSubstring . " " . $city . " " . $secondPromptSubstring . " " . $startDate . " " . $thirdPromptSubstring . " " . $endDate . " " . $fourthPromptSubstring;
         // Ligne pour utiliser le mock
-        $itinary = $itinaryHandler->genererItineraireMock($prompt, $user);
+        $itinary = $itinaryHandler->generatorItineraryMock($prompt, $user);
         // Ligne pour utiliser chatgpt
         // $itinary = $itinaryHandler->genererItineraireOpenAi($prompt, $user);
         $json = $serializer->normalize(

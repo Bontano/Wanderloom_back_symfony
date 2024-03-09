@@ -47,9 +47,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
-    private ?string $username = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Itinary::class, orphanRemoval: true)]
     private Collection $itinaries;
@@ -130,17 +127,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getUsername(): ?string
-    {
-        return $this->username;
-    }
-
-    public function setUsername(string $username): static
-    {
-        $this->username = $username;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Itinary>

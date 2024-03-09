@@ -9,93 +9,52 @@ use App\Repository\ActivityRepository;
 use App\Repository\ItinaryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use GuzzleHttp\Exception\GuzzleException;
+use PHPUnit\Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use function PHPUnit\Framework\throwException;
 
 class ItinaryHandler
 {
-    private $apiKey;
-    public function __construct(private readonly HttpClientInterface $client, private readonly EntityManagerInterface $em, private readonly ActivityRepository $activityRepository, ParameterBagInterface $params)
+    public function __construct(private readonly EntityManagerInterface $em, ParameterBagInterface $params)
     {
-        $this->apiKey = $params->get('OPEN_API_KEY');
     }
 
-    public function genererItineraireMock(string $prompt, $user): Itinary
+    public function makeItinaryInstance($itinaryArray, $user): Itinary
     {
         try {
-            $response = $this->client->request('POST', 'http://141.95.175.158:3010/itineraire', [
-                'headers' => [
-                    'Content-Type' => 'application/json',
-                ],
-                'body' => json_encode([
-                    "prompt" => $prompt,
-                ]),
-            ]);
-            return
-                self::setInDatabase((array)json_decode($response->getContent()), $user);
-        } catch (GuzzleException $e) {
-            return $e;
-        }
-    }
-    public function genererItineraireOpenAi(string $prompt, $user)
-    {
-        try {
-            $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
-                'headers' => [
-                    'Authorization' => $this->apiKey,
-                ],
-                'json' => [
-                    'model' => 'gpt-3.5-turbo',
-                    'messages' => [
-                        [
-                            'role' => 'user',
-                            'content' => $prompt
-                        ]
-                    ],
-                ],
-            ]);
-            return
-                self::setInDatabase((array)json_decode($response->getContent()), $user);
-        } catch (GuzzleException $e) {
-            return $e;
-        }
-    }
-    public function setInDatabase($itinaryDatas, $user): Itinary
-    {
-        $itinary = new Itinary();
-        $itinary->setCountry(array_key_first($itinaryDatas));
-        $itinary->setTitle("Mon bel itinéraire");
-        $itinary->setFavorite(false);
-        $itinary->setUser($user);
-        $index = 0;
-        foreach ($itinaryDatas[array_key_first($itinaryDatas)] as $day) {
-            $index++;
-            foreach ($day as $dayMoment => $activities)
-                foreach ($activities as $activityContent) {
-                    if ($this->activityRepository->findOneBy(['description' => $activityContent]) === null) {
-                        $activity = new Activity();
-                        $activity->setDescription($activityContent);
-                        $activity->setCountry(array_key_first($itinaryDatas));
-                        $this->em->persist($activity);
-
-                        $activityInItinary = new ItinaryActivity();
-                        $activityInItinary->setActivity($activity);
-                        $activityInItinary->setItinary($itinary);
-                        $activityInItinary->setDay($index);
-                        $activityInItinary->setDayMoment($dayMoment);
-                        $this->em->persist($activityInItinary);
-                    } else {
-                        $activity = $this->activityRepository->findOneBy(['description' => $activityContent]);
-                        $activityInItinary = new ItinaryActivity();
-                        $activityInItinary->setActivity($activity);
-                        $activityInItinary->setItinary($itinary);
-                        $activityInItinary->setDay($index);
-                        $activityInItinary->setDayMoment($dayMoment);
-                        $this->em->persist($activityInItinary);
-                    }
+            $itinaryArray = (array)$itinaryArray;
+            $itinary = new Itinary();
+            $itinary->setTitle("Mon bel itinéraire");
+            $itinary->setCountry(array_key_first($itinaryArray));
+            $itinary->setFavorite(false);
+            $itinary->setUser($user);
+            foreach ($itinaryArray[array_key_first($itinaryArray)] as $date=>$day){
+                $day = (array)$day;
+                foreach ($day as $dayMoment=>$dayContent){
+                    $dayContent = (array)$dayContent;
+                    $itinaryActivity = new ItinaryActivity();
+                    $itinaryActivity->setItinary($itinary);
+                    $itinaryActivity->setDay($date);
+                    $itinaryActivity->setDayMoment($dayMoment);
+                    $activity = new Activity();
+                    $activity->setCountry(array_key_first($itinaryArray));
+                    $activity->setDescription($dayContent['description']);
+                    $activity->setTitle($dayContent['title']);
+                    $activity->setLatitude($dayContent['GPS coordinates']->latitude);
+                    $activity->setLongitude($dayContent['GPS coordinates']->longitude);
+                    $itinaryActivity->setActivity($activity);
+                    $itinary->addItinaryActivity($itinaryActivity);
+                    $this->em->persist($activity);
+                    $this->em->persist($itinaryActivity);
                 }
+            }
+            $this->em->persist($itinary);
+            $this->em->flush();
+            return $itinary;
+        }catch(Exception){
+            dd("nooooooooooooooooooooooooon");
         }
-        $this->em->flush();
-        return $itinary;
     }
+
 }

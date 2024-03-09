@@ -16,18 +16,17 @@ class itinaryApiTest extends WebTestCase
 {
     public function testAddItinary(): void
     {
-        $kernel = self::bootKernel();
+        $client = static::createClient();
         $entityManager = self::getContainer()->get('doctrine')->getManager();
         $jwtManager = self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
         $user = new User();
         $user->setRoles(["ROLE_ADMIN"]);
-        $user->setUsername('johnDoe');
         $user->setEmail('johnDoe@gmail.com');
         $user->setPassword('azerty');
         $entityManager->persist($user);
 
         $token = $jwtManager->create($user);
-        $client = static::createClient();
+
 
         $itinary = new Itinary();
         $itinary->setUser($user);
@@ -37,7 +36,10 @@ class itinaryApiTest extends WebTestCase
         $entityManager->persist($itinary);
         $activity = new Activity();
         $activity->setCountry("france");
+        $activity->setTitle('La plage');
         $activity->setDescription('Visite de la pointe rouge');
+        $activity->setLongitude(1);
+        $activity->setLatitude(1);
         $entityManager->persist($activity);
         $itinaryActivity = new ItinaryActivity();
         $itinaryActivity->setItinary($itinary);
@@ -53,8 +55,11 @@ class itinaryApiTest extends WebTestCase
         $secondItinary->setFavorite(false);
         $entityManager->persist($secondItinary);
         $secondActivity = new Activity();
-        $secondActivity->setCountry("france");
-        $secondActivity->setDescription('Visite de la pointe rouge');
+        $secondActivity->setCountry("allemagne");
+        $secondActivity->setTitle('Visite de la capitale');
+        $secondActivity->setLongitude(1);
+        $secondActivity->setLatitude(1);
+        $secondActivity->setDescription('Visite de berlin');
         $entityManager->persist($secondActivity);
         $secondItinaryActivity = new ItinaryActivity();
         $secondItinaryActivity->setItinary($secondItinary);
@@ -64,15 +69,15 @@ class itinaryApiTest extends WebTestCase
         $entityManager->persist($itinaryActivity);
         $entityManager->flush();
 
-
-        $response = $client->request('get', 'https://localhost:8000/itinary/publication', [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$token,
-                ],
+        $client->request('GET', 'https://localhost:8000/api/itinary/user', [], [], [
+            'Authorization' => 'Bearer '. $token,
+            'Content-Type' => 'application/ld+json',
+            "Accept" => "application/ld+json"
         ]);
-        dump($response);
-
-        $response->getContent();
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode(), 'Le code de statut HTTP attendu n\'est pas retourné.');
+        $responseData = json_decode($response->getContent(), true);
+        dump($responseData);
 
     }
 }

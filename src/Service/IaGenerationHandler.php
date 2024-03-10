@@ -50,14 +50,17 @@ class IaGenerationHandler
         return $this->iaFetcher($formatedPrompt);
     }
 
-/*    public function newActivityGenerator($startDate, $endDate, $location)
+    public function newActivityGenerator($date, $dayMoment, $location, $option = null)
     {
-        $formatedPrompt = "Crées moi un itinéraire touristique en français pour " . $location . " chaque jour entre le " . $startDate . " et le " . $endDate . ".
-        Retournes moi un itinéraire sous forme de Json. Je veux uniquement une architecture de ce type là : 
-        ->ville->semaine->jour->moment de la journée avec activité->coordonnées très précises GPS Longitude, Latitude de l'activité.
-        Je veux que tu me retourne uniquement le json sans texte superflu.";
+        $formatedPrompt = "Crées moi une activité touristique en français pour $location à faire le $date à ce moment de la journée : $dayMoment.
+        Retournes moi une activité sous forme de Json. Je veux uniquement une architecture de ce type là : 
+        {
+            title: *activity title*,
+            description: *activity description*,
+            `GPS coordinates`: {`longitude`: *longitude coordinate*, `latitude`: *latitude coordinate},
+         }";
         return $this->iaFetcher($formatedPrompt);
-    }*/
+    }
 
     public function iaFetcher($prompt)
     {
@@ -81,27 +84,4 @@ class IaGenerationHandler
             return $e;
         }
     }
-
-/*    public function itinaryMaker($arrayItinary)
-    {
-        try {
-            $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
-                'headers' => [
-                    'Authorization' => $this->apiKey,
-                ],
-                'json' => [
-                    'model' => 'gpt-3.5-turbo',
-                    'messages' => [
-                        [
-                            'role' => 'user',
-                            'content' => $prompt
-                        ]
-                    ],
-                ],
-            ]);
-            return json_decode(json_decode($response->getContent())->choices[0]->message->content);
-        } catch (GuzzleException $e) {
-            return $e;
-        }
-    }*/
 }

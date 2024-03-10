@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\GetUserItinariesController;
+use App\Controller\MeController;
 use App\Controller\RegisterController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,6 +23,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
         controller: RegisterController::class,
         name: 'register'
     ),
+    new GetCollection(
+        uriTemplate: '/me',
+        controller: MeController::class,
+        normalizationContext: ['groups' => ['user:read']],
+    ),
 
 
 ])]
@@ -31,14 +37,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','user:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','user:read'])]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups(['user:read'])]
     private array $roles = [];
 
     /**

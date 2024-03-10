@@ -50,6 +50,13 @@ use Symfony\Component\Serializer\Attribute\Groups;
         normalizationContext: ['groups' => ['itinary:read']],
         denormalizationContext: ['groups' => ['itinary:read']],
         name: 'putItinary'
+    ),
+    new Put(
+        uriTemplate: '/itinary/{id}/activity/{idActivity}',
+        controller: GetUserItinariesController::class,
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
+        name: 'putActivityInItinary'
     )
 
 

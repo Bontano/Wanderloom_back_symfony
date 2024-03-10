@@ -3,6 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\GetUserItinariesController;
+use App\Controller\PostItinaryController;
+use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -10,7 +18,20 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
-#[ApiResource]
+#[ApiResource(operations: [
+    new Post(),
+    new Put(),
+    new Get(),
+    new Delete(),
+    new Post(
+        uriTemplate: '/itinary/publication',
+        controller: PostNewActivity::class,
+        name: 'GenerateActivity'
+    ),
+
+
+
+])]
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
 class Activity
 {
@@ -32,12 +53,15 @@ class Activity
     private Collection $itinaryActivities;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['itinary:read'])]
     private ?string $title = null;
 
     #[ORM\Column]
+    #[Groups(['itinary:read'])]
     private ?float $latitude = null;
 
     #[ORM\Column]
+    #[Groups(['itinary:read'])]
     private ?float $longitude = null;
 
     public function __construct()

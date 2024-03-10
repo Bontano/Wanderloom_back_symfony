@@ -21,7 +21,7 @@ security:
     main:
       entry_point: App\Security\LoginAuthenticator # rajouter par tom enlever si pas utile
       lazy: true
-      stateless: false # pas sur que ca soit correcte
+      stateless: false
       provider: users
       json_login:
         check_path: /auth # The name in routes.yaml is enough for mapping

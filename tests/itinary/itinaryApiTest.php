@@ -6,33 +6,37 @@ use App\Entity\Activity;
 use App\Entity\Itinary;
 use App\Entity\ItinaryActivity;
 use App\Entity\User;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class itinaryApiTest extends WebTestCase
 {
     public function testAddItinary(): void
     {
-        $client = static::createClient();
+        $client = new Client(['verify' => false]);
+
         $entityManager = self::getContainer()->get('doctrine')->getManager();
         $jwtManager = self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
+        $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
         $user = new User();
         $user->setRoles(["ROLE_ADMIN"]);
-        $user->setEmail('johnDoe@gmail.com');
-        $user->setPassword('azerty');
+        $user->setEmail('john-doe@gmail.com');
+        $user->setPassword($hasher->hashPassword($user,'azerty'));
         $entityManager->persist($user);
 
-        $token = $jwtManager->create($user);
 
 
         $itinary = new Itinary();
         $itinary->setUser($user);
         $itinary->setTitle("Mon itinéraire en france");
         $itinary->setCountry("france");
-        $itinary->setFavorite(false);
+        $itinary->setFavorite(true);
         $entityManager->persist($itinary);
         $activity = new Activity();
         $activity->setCountry("france");
@@ -68,16 +72,20 @@ class itinaryApiTest extends WebTestCase
         $secondItinaryActivity->setDayMoment('matin');
         $entityManager->persist($itinaryActivity);
         $entityManager->flush();
-
-        $client->request('GET', 'https://localhost:8000/api/itinary/user', [], [], [
-            'Authorization' => 'Bearer '. $token,
-            'Content-Type' => 'application/ld+json',
-            "Accept" => "application/ld+json"
+        $token = $jwtManager->create($user);
+        $response = $client->request('GET', 'https://localhost:8000/api/itinary/user', [
+            'headers' => [
+                'Authorization' => "Bearer $token",
+                'Content-Type' => 'application/ld+json',
+                'Accept' => 'application/ld+json',
+            ],
+            'query' => [
+                'type' => 'favorites',
+            ],
         ]);
-        $response = $client->getResponse();
-        $this->assertEquals(200, $response->getStatusCode(), 'Le code de statut HTTP attendu n\'est pas retourné.');
-        $responseData = json_decode($response->getContent(), true);
-        dump($responseData);
 
+
+        $body = json_decode($response->getBody()->getContents());
+        $this->assertSame(1, count($body));
     }
 }

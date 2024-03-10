@@ -23,8 +23,13 @@ class GetUserItinariesController extends AbstractController
 
         $user = $this->security->getUser();
         $isFavorite = $request->query->get('type') === "favorites";
+        if ($isFavorite){
+        $data = $itinaryRepository->findBy(['user' => $user, 'favorite'=>true]);
+        }else{
+            $data = $itinaryRepository->findBy(['user' => $user]);
+        }
         $json = $serializer->normalize(
-            $itinaryRepository->findBy(['user' => $user, "favorite"=> $isFavorite]),
+            $data,
             null,
             ['groups'=>'itinary:read']
         );

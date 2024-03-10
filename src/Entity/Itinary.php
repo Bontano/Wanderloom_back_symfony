@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
 
 
 #[ApiResource(operations: [
+    new Get(),
     new Post(
         uriTemplate: '/itinary/publication',
         controller: PostItinaryController::class,

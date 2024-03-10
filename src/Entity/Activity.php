@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\GetUserItinariesController;
 use App\Controller\PostItinaryController;
+use App\Controller\PostNewActivityController;
 use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,8 +25,8 @@ use Symfony\Component\Serializer\Attribute\Groups;
     new Get(),
     new Delete(),
     new Post(
-        uriTemplate: '/itinary/publication',
-        controller: PostNewActivity::class,
+        uriTemplate: '/activity/generate',
+        controller: PostNewActivityController::class,
         name: 'GenerateActivity'
     ),
 

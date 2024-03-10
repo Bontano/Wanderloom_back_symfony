@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\GetUserItinariesController;
 use App\Controller\PostItinaryController;
+use App\Controller\PutAddActivityController;
 use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -52,7 +53,14 @@ use Symfony\Component\Serializer\Attribute\Groups;
         name: 'putItinary'
     ),
     new Put(
-        uriTemplate: '/itinary/{id}/activity/{idActivity}',
+        uriTemplate: '/itinary/{id}/add/activity',
+        controller: PutAddActivityController::class,
+        normalizationContext: ['groups' => ['itinary:read']],
+        denormalizationContext: ['groups' => ['itinary:read']],
+        name: 'putActivityInItinary'
+    ),
+    new Put(
+        uriTemplate: '/itinary/{id}/edit/activity',
         controller: GetUserItinariesController::class,
         normalizationContext: ['groups' => ['itinary:read']],
         denormalizationContext: ['groups' => ['itinary:read']],

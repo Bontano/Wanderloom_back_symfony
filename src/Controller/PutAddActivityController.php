@@ -12,16 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class PutActivityInItinaryController extends AbstractController
+class PutAddActivityController extends AbstractController
 {
     public function __construct(
         private readonly Security $security,
     )
     {
     }
-    public function __invoke($id, $activityId): Response
+    public function __invoke($id): Response
     {
-        dd($id, $activityId);
+        dd($id);
 
     }
 }

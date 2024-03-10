@@ -24,12 +24,13 @@ class PostNewActivityController extends AbstractController
     {
         $user = $this->security->getUser();
         $content = json_decode($request->getContent());
-        if (!$content->date || !$content->startDate || !$content->endDate) {
+        if (!$content->date || !$content->dayMoment || !$content->location) {
             return new Response(
-                "Il manque des informations pour générer l'itinéraire"
+                "Il manque des informations afin de générer une activité."
                 , 400);
         }
-        $json = $iaGenerationHandler->newActivityGenerator($content->date,$content->location,$content->dayMoment, $content->options);
+        $AdditionalContent = isset($content->options) ?: null;
+        $json = $iaGenerationHandler->newActivityGenerator($content->date,$content->location,$content->dayMoment, $AdditionalContent);
         return new Response(
             json_encode($json)
             , 200);

@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Put;
 use App\Controller\GetUserItinariesController;
 use App\Controller\PostItinaryController;
 use App\Controller\PutAddActivityController;
+use App\Controller\PutEditActivityController;
 use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -60,13 +61,6 @@ use Symfony\Component\Serializer\Attribute\Groups;
         denormalizationContext: ['groups' => ['itinary:read']],
         name: 'putActivityInItinary'
     ),
-    new Put(
-        uriTemplate: '/itinary/{id}/edit/activity',
-        controller: GetUserItinariesController::class,
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'putActivityInItinary'
-    )
 
 
 ])]

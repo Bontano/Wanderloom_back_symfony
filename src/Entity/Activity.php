@@ -5,14 +5,10 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
 use App\Controller\DeleteActivityController;
-use App\Controller\GetUserItinariesController;
-use App\Controller\PostItinaryController;
 use App\Controller\PostNewActivityController;
-use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,22 +17,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ApiResource(operations: [
-    new Post(),
-    new Put(),
     new Get(),
-    new Delete(
-        uriTemplate: '/activity/{id}/delete',
-        controller: DeleteActivityController::class,
-        name: 'DeleteActivity'
-    ),
+    new Post(),
     new Post(
         uriTemplate: '/activity/generate',
         controller: PostNewActivityController::class,
         name: 'GenerateActivity'
     ),
-
-
-
+    new Patch(
+        denormalizationContext: ['groups' => ['activity:write']],
+    ),
+    new Delete(
+        uriTemplate: '/activity/{id}/delete',
+        controller: DeleteActivityController::class,
+        name: 'DeleteActivity'
+    ),
 ])]
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
 class Activity
@@ -48,7 +43,7 @@ class Activity
 
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
@@ -59,7 +54,7 @@ class Activity
     private Collection $itinaryActivities;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:write'])]
     private ?string $title = null;
 
     #[ORM\Column]

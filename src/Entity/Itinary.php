@@ -24,46 +24,61 @@ use Symfony\Component\Serializer\Attribute\Groups;
     new Post(
         uriTemplate: '/itinary/publication',
         controller: PostItinaryController::class,
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'newItinary'
+        openapiContext: [
+            'summary'=> 'Route pour générer un itinéraire grâce à chatGPT',
+            'requestBody' => [
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'startDate' => [
+                                    'type' => 'string',
+                                    'example' => "19/03/2024",
+                                ],
+                                'endDate' => [
+                                    'type' => 'string',
+                                    'example' => '25/03/2024',
+                                ],
+                                'city' => [
+                                    'type' => 'string',
+                                    'example' => "Marseille",
+                                ],
+                            ],
+                        ],
+                        'example' => [
+                            'startDate' => "19/03/2024",
+                            'endDate' => '25/03/2024',
+                            'city' => "Marseille",
+                        ],
+                    ],
+                ],
+            ],
+        ],
+
     ),
     new Put(
         uriTemplate: '/itinary/{id}/favorite',
         controller: PutFavoriteItinaryController::class,
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'updateFavorite'
     ),
     new GetCollection(
         uriTemplate: '/itinary/user',
         controller: GetUserItinariesController::class,
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'getUserItinaries'
     ),
     new Get(
         uriTemplate: '/itinary/{id}',
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'getItinary'
-    ),
-    new Put(
-        uriTemplate: '/itinary/{id}',
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'putItinary'
     ),
     new Patch(
+        uriTemplate: '/itinary/{id}',
+    ),
+    new Post(
         uriTemplate: '/itinary/{id}/add/activity',
         controller: PutAddActivityController::class,
-        normalizationContext: ['groups' => ['itinary:read']],
-        denormalizationContext: ['groups' => ['itinary:read']],
-        name: 'putActivityInItinary'
     ),
-
-
-])]
+],
+    normalizationContext: ['groups' => ['itinary:read']],
+    denormalizationContext: ['groups' => ['itinary:write']],
+)]
 #[ORM\Entity(repositoryClass: ItinaryRepository::class)]
 class Itinary
 {

@@ -31,7 +31,6 @@ class AppFixtures extends Fixture
                 $user->setRoles(["ROLE_USER"]);
             }
             $user->setPassword($this->hasher->hashPassword($user,'azerty'));
-            $user->setUsername($faker->userName());
             $manager->persist($user);
 
         }

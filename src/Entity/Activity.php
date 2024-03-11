@@ -8,6 +8,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use App\Controller\DeleteActivityController;
 use App\Controller\GetUserItinariesController;
 use App\Controller\PostItinaryController;
 use App\Controller\PostNewActivityController;
@@ -23,7 +24,11 @@ use Symfony\Component\Serializer\Attribute\Groups;
     new Post(),
     new Put(),
     new Get(),
-    new Delete(),
+    new Delete(
+        uriTemplate: '/activity/{id}/delete',
+        controller: DeleteActivityController::class,
+        name: 'DeleteActivity'
+    ),
     new Post(
         uriTemplate: '/activity/generate',
         controller: PostNewActivityController::class,

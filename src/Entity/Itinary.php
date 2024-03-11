@@ -8,10 +8,10 @@ use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
-use App\Controller\GetUserItinariesController;
-use App\Controller\PostItinaryController;
-use App\Controller\PutAddActivityController;
-use App\Controller\PutFavoriteItinaryController;
+use App\Controller\itinary\GetUserItinariesController;
+use App\Controller\itinary\PostItinaryController;
+use App\Controller\itinary\PutAddActivityController;
+use App\Controller\itinary\PutFavoriteItinaryController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -85,15 +85,15 @@ class Itinary
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?string $country = null;
 
 

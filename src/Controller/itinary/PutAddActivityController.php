@@ -1,16 +1,11 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\itinary;
 
-use App\Entity\Itinary;
-use App\Repository\UserRepository;
-use App\Service\ItinaryHandler;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\ItinaryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class PutAddActivityController extends AbstractController
 {
@@ -19,9 +14,12 @@ class PutAddActivityController extends AbstractController
     )
     {
     }
-    public function __invoke($id): Response
+    public function __invoke($id, ItinaryRepository $itinaryRepository): Response
     {
-        dd($id);
+        $itinary = $itinaryRepository->find($id);
+        if (!$itinary){
+
+        }
 
     }
 }

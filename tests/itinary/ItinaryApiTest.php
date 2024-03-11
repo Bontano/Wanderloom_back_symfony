@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class itinaryApiTest extends WebTestCase
+class ItinaryApiTest extends WebTestCase
 {
     public function testAddItinary(): void
     {
@@ -73,7 +73,7 @@ class itinaryApiTest extends WebTestCase
         $entityManager->persist($itinaryActivity);
         $entityManager->flush();
         $token = $jwtManager->create($user);
-        $response = $client->request('GET', 'https://localhost:8000/api/itinary/user', [
+        $response = $client->request('GET', 'http://localhost:8000/api/itinary/user', [
             'headers' => [
                 'Authorization' => "Bearer $token",
                 'Content-Type' => 'application/ld+json',

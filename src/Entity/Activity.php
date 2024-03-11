@@ -7,8 +7,8 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
-use App\Controller\DeleteActivityController;
-use App\Controller\PostNewActivityController;
+use App\Controller\activity\DeleteActivityController;
+use App\Controller\activity\PostNewActivityController;
 use App\Repository\ActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -68,7 +68,10 @@ use Symfony\Component\Serializer\Attribute\Groups;
         controller: DeleteActivityController::class,
         name: 'DeleteActivity'
     ),
-])]
+],
+    normalizationContext: ['groups' => ['activity:read']],
+    denormalizationContext: ['groups' => ['activity:write']],
+)]
 #[ORM\Entity(repositoryClass: ActivityRepository::class)]
 class Activity
 {
@@ -79,26 +82,27 @@ class Activity
 
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['itinary:read','activity:write'])]
+    #[Groups(['itinary:read','activity:write','activity:read'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?string $country = null;
 
     #[ORM\OneToMany(mappedBy: 'activity', targetEntity: ItinaryActivity::class)]
+    #[Groups(['activity:read'])]
     private Collection $itinaryActivities;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read','activity:write'])]
+    #[Groups(['itinary:read','activity:write','activity:read'])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?float $latitude = null;
 
     #[ORM\Column]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?float $longitude = null;
 
     public function __construct()

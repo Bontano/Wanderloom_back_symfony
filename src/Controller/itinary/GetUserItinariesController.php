@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\itinary;
 
 use App\Repository\ItinaryRepository;
 use App\Repository\UserRepository;

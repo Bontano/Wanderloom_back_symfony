@@ -8,13 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ItinaryActivityRepository::class)]
-#[ApiResource]
 class ItinaryActivity
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(cascade: ['persist'],inversedBy: 'itinaryActivities')]
@@ -22,14 +21,15 @@ class ItinaryActivity
     private ?Activity $activity = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'itinaryActivities')]
+    #[Groups(['activity:read'])]
     private ?Itinary $itinary = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?string $dayMoment = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read'])]
+    #[Groups(['itinary:read','activity:read'])]
     private ?string $day = null;
 
     public function getId(): ?int

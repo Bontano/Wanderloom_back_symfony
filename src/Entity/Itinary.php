@@ -5,12 +5,12 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use App\Controller\GetUserItinariesController;
 use App\Controller\PostItinaryController;
 use App\Controller\PutAddActivityController;
-use App\Controller\PutEditActivityController;
 use App\Controller\PutFavoriteItinaryController;
 use App\Repository\ItinaryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,7 +54,7 @@ use Symfony\Component\Serializer\Attribute\Groups;
         denormalizationContext: ['groups' => ['itinary:read']],
         name: 'putItinary'
     ),
-    new Put(
+    new Patch(
         uriTemplate: '/itinary/{id}/add/activity',
         controller: PutAddActivityController::class,
         normalizationContext: ['groups' => ['itinary:read']],

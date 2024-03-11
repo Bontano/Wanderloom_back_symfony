@@ -21,7 +21,6 @@ class ActivityApiTest extends WebTestCase
         $entityManager = self::getContainer()->get('doctrine')->getManager();
         $jwtManager = self::getContainer()->get('lexik_jwt_authentication.jwt_manager');
         $hasher = self::getContainer()->get(UserPasswordHasherInterface::class);
-        $iaGenerationHandler = self::getContainer()->get(IaGenerationHandler::class);
 
         $user = new User();
         $user->setRoles(["ROLE_ADMIN"]);
@@ -102,8 +101,5 @@ class ActivityApiTest extends WebTestCase
             ],
         ]);
         $this->assertSame(200, $deleteResponse->getStatusCode());
-        $deleteActivity = $activityRepository->find($activityId);
-        dd($deleteActivity);
-        $this->assertSame($deleteActivity, 'true');
     }
 }

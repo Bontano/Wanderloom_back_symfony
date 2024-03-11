@@ -20,6 +20,7 @@ class DeleteActivityController extends AbstractController
     public function __invoke($id, ActivityRepository $activityRepository): Response
     {
         $activity = $activityRepository->find($id);
+
         $this->em->remove($activity->getItinaryActivities()[0]);
         $this->em->remove($activity);
         $this->em->flush();

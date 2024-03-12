@@ -18,8 +18,9 @@ class PutAddActivityController extends AbstractController
     {
         $itinary = $itinaryRepository->find($id);
         if (!$itinary){
-
+            return new Response(
+                "Itinéraire introuvable"
+                , 400);
         }
-
     }
 }

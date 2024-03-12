@@ -14,6 +14,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ApiResource(operations: [
     new Post(
@@ -40,6 +42,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(['itinary:read','user:read'])]
+    #[Assert\NotBlank]
+    #[Assert\Email(
+        message: "Cet email n'est pas valide.",
+    )]
     private ?string $email = null;
 
     #[ORM\Column]

@@ -20,7 +20,7 @@ class ItinaryHandler
     {
     }
 
-    public function makeItinaryInstance($itinaryArray, $user): Itinary
+    public function makeItinaryInstance($itinaryArray, $user)
     {
         try {
             $itinaryArray = (array)$itinaryArray;
@@ -29,9 +29,9 @@ class ItinaryHandler
             $itinary->setCountry(array_key_first($itinaryArray));
             $itinary->setFavorite(false);
             $itinary->setUser($user);
-            foreach ($itinaryArray[array_key_first($itinaryArray)] as $date=>$day){
+            foreach ($itinaryArray[array_key_first($itinaryArray)] as $date => $day) {
                 $day = (array)$day;
-                foreach ($day as $dayMoment=>$dayContent){
+                foreach ($day as $dayMoment => $dayContent) {
                     $dayContent = (array)$dayContent;
                     $itinaryActivity = new ItinaryActivity();
                     $itinaryActivity->setItinary($itinary);
@@ -52,9 +52,10 @@ class ItinaryHandler
             $this->em->persist($itinary);
             $this->em->flush();
             return $itinary;
-        }catch(Exception){
-            dd("nooooooooooooooooooooooooon");
+        } catch (Exception $e) {
+            return $e;
         }
+
     }
 
 }

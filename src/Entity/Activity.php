@@ -23,41 +23,41 @@ use Symfony\Component\Serializer\Attribute\Groups;
         uriTemplate: '/activity/generate',
         controller: PostNewActivityController::class,
         openapiContext: [
-    'summary'=> 'Route pour générer un itinéraire grâce à chatGPT',
-    'requestBody' => [
-        'content' => [
-            'application/json' => [
-                'schema' => [
-                    'type' => 'object',
-                    'properties' => [
-                        'date' => [
-                            'type' => 'string',
-                            'example' => "19/03/2024",
+            'summary' => 'Route pour générer un itinéraire grâce à chatGPT',
+            'requestBody' => [
+                'content' => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' => [
+                                'date' => [
+                                    'type' => 'string',
+                                    'example' => "19/03/2024",
+                                ],
+                                'dayMoment' => [
+                                    'type' => 'string',
+                                    'example' => 'Midi',
+                                ],
+                                'location' => [
+                                    'type' => 'string',
+                                    'example' => "Ecosse",
+                                ],
+                                'options' => [
+                                    'type' => 'string',
+                                    'example' => "Je veux un restaurant gastronomique",
+                                ],
+                            ],
                         ],
-                        'dayMoment' => [
-                            'type' => 'string',
-                            'example' => 'Midi',
-                        ],
-                        'location' => [
-                            'type' => 'string',
-                            'example' => "Ecosse",
-                        ],
-                        'options' => [
-                            'type' => 'string',
-                            'example' => "Je veux un restaurant gastronomique",
+                        'example' => [
+                            'date' => "19/03/2024",
+                            'location' => 'Ecosse',
+                            'dayMoment' => "Midi",
+                            'options' => "Je veux un restaurant gastronomique",
                         ],
                     ],
                 ],
-                'example' => [
-                    'date' => "19/03/2024",
-                    'location' => 'Ecosse',
-                    'dayMoment' => "Midi",
-                    'options' => "Je veux un restaurant gastronomique",
-                ],
             ],
         ],
-    ],
-],
         name: 'GenerateActivity',
     ),
     new Patch(

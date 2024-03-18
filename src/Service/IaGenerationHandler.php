@@ -50,8 +50,10 @@ class IaGenerationHandler
         return $this->iaFetcher($formatedPrompt);
     }
 
+    // Il s'agit de la fonction permettant de créer notre front pour l'envoyer à chatgpt
     public function newActivityGenerator($date, $dayMoment, $location, $option = null)
     {
+        // On crée notre prompt et on insère les informations
         $formatedPrompt = "Crées moi une activité touristique en français pour $location à faire le $date à ce moment de la journée : $dayMoment.
         Retournes moi une activité sous forme de Json. Je veux uniquement une architecture de ce type là : 
         {
@@ -59,16 +61,21 @@ class IaGenerationHandler
             description: *activity description*,
             `GPS coordinates`: {`longitude`: *longitude coordinate*, `latitude`: *latitude coordinate},
          }";
+        // On return la réponse de notre fonction iaFetcher à laquelle on lui passe le front
         return $this->iaFetcher($formatedPrompt);
     }
 
     public function iaFetcher($prompt)
     {
+        // On pose un try catch car il s'agit d'un code pouvant échouer (un appel api)
         try {
+            // on fait une requete POST vers l'url d'open api
             $response = $this->client->request('POST', 'https://api.openai.com/v1/chat/completions', [
+                // On lui passe en header le token d'authentification de chatgpt
                 'headers' => [
                     'Authorization' => $this->apiKey,
                 ],
+                // On lui passe la charge utile, c'est à dire le prompt
                 'json' => [
                     'model' => 'gpt-3.5-turbo',
                     'messages' => [
@@ -79,6 +86,7 @@ class IaGenerationHandler
                     ],
                 ],
             ]);
+            // on return la réponse décodée de chatgpt
             return json_decode(json_decode($response->getContent())->choices[0]->message->content);
         } catch (GuzzleException $e) {
             return $e;

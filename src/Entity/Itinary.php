@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
@@ -70,11 +71,15 @@ use Symfony\Component\Serializer\Attribute\Groups;
     ),
     new Patch(
         uriTemplate: '/itinary/{id}',
+        denormalizationContext: ['groups' => ['itinaryPatch:write']],
     ),
     new Post(
         uriTemplate: '/itinary/{id}/add/activity',
         controller: PutAddActivityController::class,
     ),
+    new Delete(
+        uriTemplate: '/itinary/{id}',
+    )
 ],
     normalizationContext: ['groups' => ['itinary:read']],
     denormalizationContext: ['groups' => ['itinary:write']],
@@ -89,15 +94,16 @@ class Itinary
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read','activity:read'])]
+    #[Groups(['itinary:read','activity:read','itinaryPatch:write'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['itinary:read','activity:read'])]
+    #[Groups(['itinary:read','activity:read','itinaryPatch:write'])]
     private ?string $country = null;
 
 
     #[ORM\OneToMany(mappedBy: 'itinary', targetEntity: ItinaryActivity::class)]
+    #[ORM\JoinColumn(onDelete: "cascade")]
     #[Groups(['itinary:read'])]
     private Collection $itinaryActivities;
 

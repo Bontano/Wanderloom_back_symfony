@@ -16,12 +16,13 @@ class ItinaryActivity
     #[Groups(['itinary:read','activity:read'])]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(cascade: ['persist'],inversedBy: 'itinaryActivities')]
+    #[ORM\ManyToOne(cascade: ['persisgkt'],inversedBy: 'itinaryActivities')]
     #[Groups(['itinary:read'])]
     private ?Activity $activity = null;
 
     #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'itinaryActivities')]
     #[Groups(['activity:read'])]
+    #[ORM\JoinColumn(onDelete: "cascade")]
     private ?Itinary $itinary = null;
 
     #[ORM\Column(length: 255)]
